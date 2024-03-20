@@ -21,8 +21,8 @@ public class BlogUserDetailsService implements UserDetailsService {
         userRepository.deleteAll();
     }
 
-    public User save(User user){
-        return userRepository.save(user);
+    public void save(User user){
+        userRepository.save(user);
     }
 
     public List<User> findAll() { return userRepository.findAll(); }

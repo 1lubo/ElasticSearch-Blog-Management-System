@@ -1,16 +1,16 @@
 package com.example.bloggestx.controller.advice;
 
-import com.example.bloggestx.model.principal.BlogUserPrincipal;
-import com.example.bloggestx.service.BlogUserDetailsService;
 import com.example.bloggestx.exception.NotFoundException;
 import com.example.bloggestx.model.User;
-import freemarker.core.ParseException;
+import com.example.bloggestx.model.principal.BlogUserPrincipal;
+import com.example.bloggestx.service.BlogUserDetailsService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.Optional;
@@ -32,7 +32,7 @@ public class BaseControllerAdvice {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public void handleBadCredentialsException(Exception e, Model model){
+    public void handleBadCredentialsException(Model model){
         model.addAttribute("message", "Incorrect Username or Password");
     }
 
@@ -62,6 +62,6 @@ public class BaseControllerAdvice {
 
     @ModelAttribute
     public void addPageNumber(@RequestParam(required = false, value = "page") Optional<Integer> page, Model model){
-        model.addAttribute("pageNumber", page.orElseGet(() -> 0));
+        model.addAttribute("pageNumber", page.orElse(0));
     }
 }

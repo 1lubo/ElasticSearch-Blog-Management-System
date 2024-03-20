@@ -13,9 +13,9 @@ import java.io.IOException;
 
 @Component
 public class SimpleFailureLoginHandler implements AuthenticationFailureHandler {
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) {
         try {
             redirectStrategy.sendRedirect(request, response, "/login?error=401");
         } catch (Exception e) {

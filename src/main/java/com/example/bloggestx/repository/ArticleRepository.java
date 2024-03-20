@@ -17,8 +17,5 @@ public interface ArticleRepository extends ElasticsearchRepository<Article, Stri
     Page<Article> findByTitleContainsIgnoreCase(
             String query, Pageable pageable
     );
-    @Query("{\"bool\":{\"must\":[{\"match\":{\"author.username\": \"?0\"}}]}}")
-    Page<Article> findByAuthorsNameUsingCustomQuery (String name, Pageable pageable);
-
     Optional<Article> findByLink(String link);
 }
