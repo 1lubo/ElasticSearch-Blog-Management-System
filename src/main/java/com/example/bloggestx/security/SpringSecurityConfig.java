@@ -1,9 +1,7 @@
 package com.example.bloggestx.security;
 
-import com.example.bloggestx.controller.handler.SimpleAuthenticationSuccessHandler;
-import com.example.bloggestx.controller.handler.SimpleFailureLoginHandler;
-import com.example.bloggestx.model.enums.Role;
 import com.example.bloggestx.model.User;
+import com.example.bloggestx.model.enums.Role;
 import com.example.bloggestx.model.enums.RoleDescription;
 import com.example.bloggestx.service.BlogUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
