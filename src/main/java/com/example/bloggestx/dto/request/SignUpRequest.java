@@ -1,4 +1,4 @@
-package com.example.bloggestx.dao.request;
+package com.example.bloggestx.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SigninRequest {
+public class SignUpRequest {
     private String username;
     private String password;
 }

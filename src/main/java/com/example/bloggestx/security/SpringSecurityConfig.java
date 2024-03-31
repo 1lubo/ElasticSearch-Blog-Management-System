@@ -1,4 +1,4 @@
-package com.example.bloggestx.configuration;
+package com.example.bloggestx.security;
 
 import com.example.bloggestx.controller.handler.SimpleAuthenticationSuccessHandler;
 import com.example.bloggestx.controller.handler.SimpleFailureLoginHandler;
@@ -21,36 +21,41 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
+
 import java.util.UUID;
 
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SpringSecurityConfig {
 
+    private final BlogUserDetailsService userService;
     @Autowired
-    private BlogUserDetailsService userService;
-
-    @Autowired
-    private SimpleAuthenticationSuccessHandler successLoginHandler;
-
-    @Autowired
-    private SimpleFailureLoginHandler failureLoginHandler;
+    public SpringSecurityConfig(BlogUserDetailsService userService) {
+        this.userService = userService;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests.requestMatchers("/article", "/article/show/**"
-                        , "/webjars/**", "/css/**", "/favicon.ico", "/index").permitAll()
+                        , "/webjars/**", "/css/**", "/favicon.ico", "/index", "/login**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/article", "/article/delete/**").authenticated()
-                        .requestMatchers("/article/edit/**", "/article/new").authenticated()
-                        .anyRequest().permitAll())
+                        .requestMatchers("/article/edit/**", "/article/new").authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .successHandler(successLoginHandler)
-                        .failureHandler(failureLoginHandler)
+                        .defaultSuccessUrl("/article?status=200")
+                        .failureUrl("/login?error=true")
                 )
-                .logout((logout) -> logout.logoutSuccessUrl("/article?status=202"));
+                .logout((logout) -> logout
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessUrl("/article?status=202"))
+                .securityContext((securityContext) -> securityContext
+                        .securityContextRepository(securityContextRepository()));
         return http.build();
     }
 
@@ -60,6 +65,14 @@ public class SecurityConfig {
         authProvider.setUserDetailsService(userService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
+    }
+
+    @Bean
+    public SecurityContextRepository securityContextRepository(){
+        return new DelegatingSecurityContextRepository(
+                new RequestAttributeSecurityContextRepository(),
+                new HttpSessionSecurityContextRepository()
+        );
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package com.example.bloggestx.dao.response;
+package com.example.bloggestx.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
