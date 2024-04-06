@@ -107,9 +107,7 @@ public class ArticleController {
             article.setId(id);
         } else {
             Optional<Article> optionalArticle = articleService.findById(article.getId());
-            optionalArticle.ifPresent(value -> {
-                article.setAuthor(value.getAuthor());
-            });
+            optionalArticle.ifPresent(value -> article.setAuthor(value.getAuthor()));
         }
         articleService.save(article);
         attributes.addFlashAttribute("message",
