@@ -25,7 +25,7 @@
           user.role == "ADMIN" >
           <form id="form_delete_${article.id}" method="post" action="/article/show/delete/${article.id}"></form>
             <p>
-              <a class="btn btn-success" href="/article/show/edit/${article.id}">Edit</a>
+              <a class="btn btn-success" href="/article/show/edit/${article.link}">Edit</a>
               <a href="#" class="btn btn-danger" onclick="$('#form_delete_${article.id}').submit();">Delete</a>
              </p>
         </#if>

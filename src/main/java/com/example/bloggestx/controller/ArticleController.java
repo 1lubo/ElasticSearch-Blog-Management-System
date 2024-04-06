@@ -30,7 +30,7 @@ public class ArticleController {
     @GetMapping
     public String index(Model model,
                         @AuthenticationPrincipal UserDetails userDetails,
-                        @RequestParam(required = false, value = "status") Optional<Integer> status,
+                        @RequestParam(required = false, value = "signin") Optional<Boolean> signin,
                         @RequestParam(required = false, value = "q") String q,
                         @RequestParam(required = false, value = "page") Optional<Integer> page,
                         @RequestParam(required = false, value = "size") Optional<Integer> size) {
@@ -42,8 +42,8 @@ public class ArticleController {
                     .search(q, (PageRequest.of(page.orElse(1), size.orElse(10)))));
         }
 
-        if (status.isPresent()) {
-            if (status.get().equals(200)) {
+        if (signin.isPresent()) {
+            if (signin.get()) {
                 model.addAttribute("message",
                         String.format("User { %s } successfully logged in.", userDetails.getUsername()));
             } else {
@@ -71,13 +71,13 @@ public class ArticleController {
         return "article/create";
     }
 
-    @GetMapping("/show/edit/{id}")
-    public String editPost(@PathVariable String id, Model model){
-        Optional<Article> article = articleService.findById(id);
+    @GetMapping("/show/edit/{link}")
+    public String editPost(@PathVariable String link, Model model){
+        Optional<Article> article = articleService.findByLink(link);
         if (article.isPresent()) {
             model.addAttribute("article", article.get());
         } else {
-            return throwNotFoundException(id);
+            return throwNotFoundException(link);
         }
         return "article/create";
     }
@@ -105,17 +105,15 @@ public class ArticleController {
             User user = userService.findByUserName(userDetails.getUsername());
             article.setAuthor(user);
             article.setId(id);
-            article.setLink(id);
         } else {
             Optional<Article> optionalArticle = articleService.findById(article.getId());
             optionalArticle.ifPresent(value -> {
                 article.setAuthor(value.getAuthor());
-                article.setLink(value.getId());
             });
         }
         articleService.save(article);
         attributes.addFlashAttribute("message",
-                String.format("Article with id { %s } successfully edited", article.getId()));
+                String.format("Article with id { %s } saved successfully", article.getId()));
         return "redirect:/article/show/" + article.getLink();
     }
 

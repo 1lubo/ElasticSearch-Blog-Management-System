@@ -13,9 +13,12 @@ import java.util.List;
 
 @Service
 public class BlogUserDetailsService implements UserDetailsService {
+    private final UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public BlogUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public void deleteAll() {
         userRepository.deleteAll();

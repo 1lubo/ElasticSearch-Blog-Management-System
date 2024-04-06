@@ -1,6 +1,7 @@
 package com.example.bloggestx.controller.advice;
 
 import com.example.bloggestx.exception.NotFoundException;
+import com.example.bloggestx.exception.UsernameAlreadyTakenException;
 import com.example.bloggestx.model.User;
 import com.example.bloggestx.model.principal.BlogUserPrincipal;
 import com.example.bloggestx.service.BlogUserDetailsService;
@@ -29,6 +30,12 @@ public class BaseControllerAdvice {
         model.addAttribute("status", 400);
         model.addAttribute("exception", e);
         return "common/error";
+    }
+
+    @ExceptionHandler(UsernameAlreadyTakenException.class)
+    public String handleUsernameAlreadyTakenException(UsernameAlreadyTakenException exception, Model model) {
+        model.addAttribute("message", exception.getMessage());
+        return "common/signup?error=true";
     }
 
     @ExceptionHandler(BadCredentialsException.class)

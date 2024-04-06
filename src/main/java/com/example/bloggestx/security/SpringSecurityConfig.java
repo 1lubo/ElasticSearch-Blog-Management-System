@@ -4,6 +4,7 @@ import com.example.bloggestx.model.User;
 import com.example.bloggestx.model.enums.Role;
 import com.example.bloggestx.model.enums.RoleDescription;
 import com.example.bloggestx.service.BlogUserDetailsService;
+import com.example.bloggestx.controller.handler.SimpleAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -32,26 +33,31 @@ import java.util.UUID;
 public class SpringSecurityConfig {
 
     private final BlogUserDetailsService userService;
+    private final SimpleAuthenticationSuccessHandler successHandler;
+
     @Autowired
-    public SpringSecurityConfig(BlogUserDetailsService userService) {
+    public SpringSecurityConfig(BlogUserDetailsService userService, SimpleAuthenticationSuccessHandler successHandler) {
         this.userService = userService;
+        this.successHandler = successHandler;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(requests -> requests.requestMatchers("/article", "/article/show/**"
-                        , "/webjars/**", "/css/**", "/favicon.ico", "/index", "/login**").permitAll()
+                .authorizeHttpRequests(requests -> requests.requestMatchers("/article", "/article/show/**",
+                                "/webjars/**", "/css/**", "/favicon.ico", "/index", "/login**",
+                                "/signup**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/article", "/article/delete/**").authenticated()
                         .requestMatchers("/article/edit/**", "/article/new").authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/article?status=200")
+                        .defaultSuccessUrl("/article?signin=true")
+                        .successHandler(successHandler)
                         .failureUrl("/login?error=true")
                 )
                 .logout((logout) -> logout
                         .deleteCookies("JSESSIONID")
-                        .logoutSuccessUrl("/article?status=202"))
+                        .logoutSuccessUrl("/article?signin=false"))
                 .securityContext((securityContext) -> securityContext
                         .securityContextRepository(securityContextRepository()));
         return http.build();

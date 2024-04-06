@@ -12,22 +12,22 @@
   <script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-  <#if message??>
-    <div class="row justify-content-center">
-      <div id="alert-danger" class="col-12 col-md-8 col-lg-6 col-xl-5 alert alert-danger">
-          ${message}
-      </div>
+<#if message??>
+  <div class="row justify-content-center">
+    <div id="alert-danger" class="col-12 col-md-8 col-lg-6 col-xl-5 alert alert-danger">
+        ${message}
     </div>
-    <script type="text/javascript">
+  </div>
+  <script type="text/javascript">
       $( document ).ready(function () {
           $("#alert-danger").fadeTo(2000, 500).slideUp(500,
               function () {
-                $("#alert-danger").slideUp(500);
+                  $("#alert-danger").slideUp(500);
               });
       });
   </script>
-  </#if>
-  <section class="vh-100 gradient-custom">
+</#if>
+<section class="vh-100 gradient-custom">
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col-12 col-md-8 col-lg-6 col-xl-5">
@@ -37,9 +37,10 @@
 
             <div class="mb-md-5 mt-md-4 pb-5">
 
-              <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
-              <p class="text-white-50 mb-5">Please enter your login and password!</p>
-              <form action="login" method="post">
+              <h2 class="fw-bold mb-2 text-uppercase">Create an account</h2>
+              <p class="text-white-50 mb-5">Please enter the required information!</p>
+              <form action="signup" method="post">
+
                 <div class="form-outline form-white mb-4">
                   <input type="text" name="username" id="username" class="form-control form-control-lg" />
                   <label class="form-label" for="username">Username</label>
@@ -50,14 +51,19 @@
                   <label class="form-label" for="password">Password</label>
                 </div>
 
-                <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
+                <div class="form-check d-flex justify-content-center mb-5">
+                  <input class="form-check-input me-2" type="checkbox" value="" id="tos" />
+                  <label class="form-check-label" for="tos">
+                    I agree all statements in <a href="#!" class="text-white-50"><u>Terms of service</u></a>
+                  </label>
+                </div>
 
-                <input class="btn btn-outline-light btn-lg px-5" type="submit" value="Login">
+                <input class="btn btn-outline-light btn-lg px-5" type="submit" value="Register">
               </form>
             </div>
 
             <div>
-              <p class="mb-0">Don't have an account? <a href="signup" class="text-white-50 fw-bold">Sign Up</a>
+              <p class="mb-0">Already have an account? <a href="login" class="text-white-50 fw-bold">Sign In</a>
               </p>
             </div>
 
@@ -67,5 +73,5 @@
     </div>
   </div>
 </section>
-  <script src="/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 </body>

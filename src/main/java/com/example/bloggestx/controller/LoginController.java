@@ -29,8 +29,8 @@ public class LoginController {
     }
 
     @GetMapping()
-    String login(@RequestParam(required = false, value = "error") Optional<Boolean> status, Model model) {
-        if(status.isPresent()){
+    String login(@RequestParam(required = false, value = "error") Optional<Boolean> error, Model model) {
+        if(error.isPresent()){
             model.addAttribute("message", "Incorrect username or password.");
         }
         return "common/login";
@@ -38,8 +38,8 @@ public class LoginController {
 
     @PostMapping()
     void login(@RequestBody SigninRequest signinRequest, HttpServletRequest request) {
-        Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(signinRequest.getUsername(),
-                signinRequest.getPassword());
+        Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(
+                signinRequest.getUsername(),signinRequest.getPassword());
         Authentication authenticationResponse = authenticationManager.authenticate(authenticationRequest);
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
