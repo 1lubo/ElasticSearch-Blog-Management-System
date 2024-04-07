@@ -12,8 +12,12 @@ import java.util.Optional;
 @Service
 public class ArticleService {
 
+    private final ArticleRepository repository;
+
     @Autowired
-    ArticleRepository repository;
+    public ArticleService(ArticleRepository repository) {
+        this.repository = repository;
+    }
 
     public Optional<Article> findById (String id) {
         return repository.findById(id);

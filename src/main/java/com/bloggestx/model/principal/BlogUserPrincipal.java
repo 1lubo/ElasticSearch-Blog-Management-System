@@ -9,14 +9,10 @@ import java.util.Collection;
 import java.util.List;
 
 public class BlogUserPrincipal implements UserDetails {
-    private User user;
-    private String userName;
-    private String userRole;
+    private final User user;
 
     public BlogUserPrincipal(User user){
         this.user = user;
-        this.userName = getUsername();
-        this.userRole = getRole();
     }
 
     @Override
@@ -54,7 +50,4 @@ public class BlogUserPrincipal implements UserDetails {
         return true;
     }
 
-    public String getRole() {
-        return user.getRole().toString();
-    }
 }

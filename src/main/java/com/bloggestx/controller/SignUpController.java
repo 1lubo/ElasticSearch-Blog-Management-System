@@ -20,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +49,9 @@ public class SignUpController {
         return "common/signup";
     }
     @PostMapping
-    void signup(SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
+    void signup(SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
         User user = userDetailsService.findByUserName(signUpRequest.getUsername());
 
         if( user != null ){
