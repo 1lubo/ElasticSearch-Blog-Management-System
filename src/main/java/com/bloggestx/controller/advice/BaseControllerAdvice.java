@@ -3,7 +3,7 @@ package com.bloggestx.controller.advice;
 import com.bloggestx.exception.UsernameAlreadyTakenException;
 import com.bloggestx.model.principal.BlogUserPrincipal;
 import com.bloggestx.service.BlogUserDetailsService;
-import com.bloggestx.exception.NotFoundException;
+import com.bloggestx.exception.ArticleNotFoundException;
 import com.bloggestx.model.User;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,8 +25,8 @@ public class BaseControllerAdvice {
         this.userService = userService;
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public String handleNotFoundException(NotFoundException e, Model model) {
+    @ExceptionHandler(ArticleNotFoundException.class)
+    public String handleNotFoundException(ArticleNotFoundException e, Model model) {
         model.addAttribute("status", 400);
         model.addAttribute("exception", e);
         return "common/error";

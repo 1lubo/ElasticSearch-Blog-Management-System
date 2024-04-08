@@ -6,6 +6,7 @@ import com.bloggestx.model.enums.Role;
 import com.bloggestx.model.enums.RoleDescription;
 import com.bloggestx.service.ArticleService;
 import com.bloggestx.service.BlogUserDetailsService;
+import com.bloggestx.service.implementation.ArticleServiceImpl;
 import com.github.javafaker.Faker;
 import com.github.javafaker.service.RandomService;
 import org.slf4j.Logger;
@@ -20,11 +21,11 @@ import java.util.*;
 
 @Component
 public class InitLoader implements CommandLineRunner {
-    private final ArticleService articleService;
+    private final ArticleServiceImpl articleService;
     private final BlogUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
-    public InitLoader(final ArticleService articleService, final BlogUserDetailsService userDetailsService) {
+    public InitLoader(final ArticleServiceImpl articleService, final BlogUserDetailsService userDetailsService) {
         this.articleService = articleService;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = new BCryptPasswordEncoder();
@@ -42,6 +43,7 @@ public class InitLoader implements CommandLineRunner {
         try {
             if(loadInitData){
                 articleService.deleteAll();
+                List<User> allUsers = userDetailsService.findAll();
                 for (int i = 0; i < 20; i++) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.set(2000, Calendar.JANUARY, 0);
@@ -53,21 +55,18 @@ public class InitLoader implements CommandLineRunner {
                     userDetailsService.save(new User(UUID.randomUUID().toString(), faker.ancient().titan(),
                             passwordEncoder.encode("password"), Role.USER, RoleDescription.USER));
 
-                    String id = UUID.randomUUID().toString();
                     Article article = new Article();
-                    article.setId(id);
                     article.setTitle(faker.book().title());
                     article.setLink(String.join("-", article.getTitle().toLowerCase().split(" ")));
                     article.setSummary(faker.dune().saying());
                     List<String> lorem = faker.lorem().sentences(5);
                     article.setBody(String.join(" ", lorem));
                     article.setCreatedDate(faker.date().between(dateFrom, dateTo));
-                    List<User> allUsers = userDetailsService.findAll();
                     article.setAuthor(allUsers
                             .get(
                                     faker.random().nextInt(0, allUsers.size() - 1)
                             ));
-                    articleService.save(article);
+                    articleService.saveArticle(article);
                 }
             }
         } catch (Throwable throwable) {

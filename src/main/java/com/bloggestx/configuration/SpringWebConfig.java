@@ -10,8 +10,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 @Configuration
-@EnableWebMvc
-@ComponentScan("com.bloggestx")
 public class SpringWebConfig implements WebMvcConfigurer {
 
     @Bean
