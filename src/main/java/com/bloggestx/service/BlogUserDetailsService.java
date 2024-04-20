@@ -3,7 +3,6 @@ package com.bloggestx.service;
 import com.bloggestx.model.principal.BlogUserPrincipal;
 import com.bloggestx.model.User;
 import com.bloggestx.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,7 +14,6 @@ import java.util.List;
 public class BlogUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
-    @Autowired
     public BlogUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

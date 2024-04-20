@@ -5,16 +5,14 @@ import com.bloggestx.exception.ArticleNotFoundException;
 import com.bloggestx.model.Article;
 import com.bloggestx.repository.ArticleRepository;
 import com.bloggestx.service.ArticleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
-    private ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
 
-    @Autowired
     public ArticleServiceImpl(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
     }
