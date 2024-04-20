@@ -5,17 +5,15 @@ import com.bloggestx.exception.ArticleNotFoundException;
 import com.bloggestx.model.Article;
 import com.bloggestx.repository.ArticleRepository;
 import com.bloggestx.service.ArticleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
-
-    public ArticleServiceImpl(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
-    }
 
     @Override
     public ArticleDto saveArticle(Article article) {
