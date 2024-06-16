@@ -1,0 +1,6 @@
+admin:
+  indices:
+    - names: [ 'blog*' ]
+      privileges: [ 'create_index', 'manage', 'all' ]
+      field_security:
+        grant: ['all' ]

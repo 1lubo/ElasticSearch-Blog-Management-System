@@ -1,10 +1,9 @@
 package com.bloggestx.controller;
 
-import com.bloggestx.model.User;
-import com.bloggestx.service.ArticleService;
-import com.bloggestx.service.BlogUserDetailsService;
-import com.bloggestx.exception.NotFoundException;
 import com.bloggestx.model.Article;
+import com.bloggestx.model.User;
+import com.bloggestx.service.BlogUserDetailsService;
+import com.bloggestx.service.implementation.ArticleServiceImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,15 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/article")
 public class ArticleController {
-    private final ArticleService articleService;
+    private final ArticleServiceImpl articleService;
     private final BlogUserDetailsService userService;
 
-    public ArticleController(ArticleService articleService, BlogUserDetailsService userService) {
+    public ArticleController(ArticleServiceImpl articleService, BlogUserDetailsService userService) {
         this.articleService = articleService;
         this.userService = userService;
     }
@@ -57,12 +55,8 @@ public class ArticleController {
 
     @GetMapping("/show/{link}")
     public String getPost(@PathVariable String link, Model model) {
-        Optional<Article> article = articleService.findByLink(link);
-        if (article.isPresent()) {
-            model.addAttribute("article", article.get());
-        } else {
-            throw new NotFoundException(link);
-        }
+        Article article = articleService.getArticlebyLink(link);
+        model.addAttribute("article", article);
         return "article/show";
     }
 
@@ -73,22 +67,15 @@ public class ArticleController {
 
     @GetMapping("/show/edit/{link}")
     public String editPost(@PathVariable String link, Model model){
-        Optional<Article> article = articleService.findByLink(link);
-        if (article.isPresent()) {
-            model.addAttribute("article", article.get());
-        } else {
-            return throwNotFoundException(link);
-        }
+        Article article = articleService.getArticlebyLink(link);
+        model.addAttribute("article", article);
         return "article/create";
-    }
-
-    private String throwNotFoundException(@PathVariable String id) {
-        throw new NotFoundException("Article Not Found for " + id);
     }
 
     @PostMapping("/show/delete/{id}")
     public String deletePost(@PathVariable String id, RedirectAttributes attributes) {
-        articleService.deleteById(id);
+
+        articleService.deleteArticle(id);
 
         attributes.addFlashAttribute("message", "Article with id " + id + " deleted successfully!");
         attributes.addFlashAttribute("articles",
@@ -101,15 +88,15 @@ public class ArticleController {
     public String savePost(@AuthenticationPrincipal UserDetails userDetails,
                            Article article, RedirectAttributes attributes) {
         if(article.getId() == null || article.getId().isEmpty()) {
-            String id = UUID.randomUUID().toString();
             User user = userService.findByUserName(userDetails.getUsername());
             article.setAuthor(user);
-            article.setId(id);
         } else {
-            Optional<Article> optionalArticle = articleService.findById(article.getId());
-            optionalArticle.ifPresent(value -> article.setAuthor(value.getAuthor()));
+            Article existingArticle = articleService.getArticlebyId(article.getId());
+            article.setAuthor(existingArticle.getAuthor());
         }
-        articleService.save(article);
+
+        articleService.saveArticle(article);
+
         attributes.addFlashAttribute("message",
                 String.format("Article with id { %s } saved successfully", article.getId()));
         return "redirect:/article/show/" + article.getLink();
