@@ -14,8 +14,7 @@ Copyright © 2018 Packt Publishing”
 - [Getting Started](#getting-started)
 - [Building and Running](#building-and-running)
 - [Configuration](#configuration)
-- [API Documentation](#api-documentation)
-- [Contributing](#contributing)
+- [Elastic Stack on Docker Documentation](#elastic-stack-on-docker-documentation)
 - [License](#license)
 
 ## Introduction
