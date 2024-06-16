@@ -10,6 +10,5 @@ import java.util.List;
 @Repository
 public interface UserRepository extends ElasticsearchRepository<User, String> {
     User findByUsername(String username);
-    @NonNull User save(@NonNull User user);
     @NonNull List<User> findAll();
 }

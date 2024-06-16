@@ -1,5 +1,6 @@
 package com.bloggestx.service;
 
+import com.bloggestx.exception.ArticleNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("Testing Article Service")
 @ExtendWith(MockitoExtension.class)
@@ -57,9 +59,6 @@ public class ArticleServiceImplTest {
                 .build();
     }
 
-
-
-
     @Test
     @DisplayName("saveArticle should return ArticleDto")
     public void ArticleService_saveArticle_ReturnsArticleDto() {
@@ -73,7 +72,7 @@ public class ArticleServiceImplTest {
     }
 
     @Test
-    @DisplayName("getArticlebyId should return Optional of Article with an Article")
+    @DisplayName("getArticlebyId should return Optional of Article if Article exists")
     public void getArticlebyId_ReturnsOptionalArticle() {
         when(articleRepository.findById(any(String.class))).thenReturn(Optional.ofNullable(savedArticle));
 
@@ -81,6 +80,13 @@ public class ArticleServiceImplTest {
 
         Assertions.assertNotNull(foundArticle);
         Assertions.assertNotNull(foundArticle.getId());
+    }
+
+    @Test
+    @DisplayName("getArticlebyId should throw ArticleNotFoundException if Article with given id does not exist")
+    public void getArticlebyId_Throws_ArticleNotFoundException() {
+        when (articleRepository.findById("doesNotExist")).thenThrow(ArticleNotFoundException.class);
+        Assertions.assertThrows(ArticleNotFoundException.class, () -> articleService.getArticlebyId("doesNotExist"));
     }
 
     @Test
@@ -107,6 +113,51 @@ public class ArticleServiceImplTest {
         Assertions.assertEquals(allArticles.getTotalElements(), foundArticles.getTotalElements());
     }
 
+    @Test
+    @DisplayName("deleteArticle should call articleRepostory 2 times if an Article with given ID exists")
+    public void deleteArticle_calls_ArticleRepostory_TwoTimes() {
+
+        when (articleRepository.findById(any(String.class))).thenReturn(Optional.ofNullable(savedArticle));
+        doNothing(). when (articleRepository).delete(savedArticle);
+
+        articleService.deleteArticle(savedArticle.getId());
+
+        verify(articleRepository, times(1)).findById(any(String.class));
+        verify(articleRepository, times(1)).delete(savedArticle);
+    }
+
+    @Test
+    @DisplayName("deleteArticle should throw ArticleNotFoundException if no Article with given ID exists")
+    public void deleteArticle_throws_ArticleNotFoundException() {
+        Assertions.assertThrows(ArticleNotFoundException.class, () -> articleService.deleteArticle("doesNotExist"));
+    }
+
+    @Test
+    @DisplayName("getArticlebyLink should return Optional with Article if Article exists")
+    public void getArticlebyLink_ReturnsOptionalArticle() {
+        when(articleRepository.findByLink(any(String.class))).thenReturn(Optional.ofNullable(savedArticle));
+
+        Article foundArticle = articleService.getArticlebyLink(savedArticle.getLink());
+
+        Assertions.assertNotNull(foundArticle);
+        Assertions.assertNotNull(foundArticle.getLink());
+    }
+
+    @Test
+    @DisplayName("getArticlebyLink should throw ArticleNotFoundException if Article with given id does not exist")
+    public void getArticlebyLink_Throws_ArticleNotFoundException() {
+        Assertions.assertThrows(ArticleNotFoundException.class, () -> articleService.getArticlebyId("doesNotExist"));
+    }
+
+    @Test
+    @DisplayName("deleteAll should call repository 1 time")
+    public void deleteAll_calls_repository_OneTime() {
+        doNothing(). when (articleRepository).deleteAll();
+
+        articleService.deleteAll();
+
+        verify(articleRepository, times(1)).deleteAll();
+    }
 
     //https://medium.com/simform-engineering/testing-spring-boot-applications-best-practices-and-frameworks-6294e1068516
 }

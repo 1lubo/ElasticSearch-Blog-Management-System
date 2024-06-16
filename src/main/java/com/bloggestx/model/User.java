@@ -25,6 +25,7 @@ public class User {
     private RoleDescription description;
 
     @Field(type = FieldType.Keyword)
+    @Builder.Default
     private String type = "user";
 
     public User(String id, String username, String password, Role role, RoleDescription description) {
